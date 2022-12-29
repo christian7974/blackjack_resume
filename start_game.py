@@ -2,6 +2,8 @@
 File where the game is started (deck, player, dealer are initialized)
 """
 import random
+from player import Player
+from dealer import Dealer
 class Card:
     """
     An individual card that will be used in the game
@@ -54,3 +56,5 @@ def initialize_deck():
     random.shuffle(deck)   
     return deck
 master_deck = initialize_deck()
+player_1 = Player()
+the_dealer = Dealer()
