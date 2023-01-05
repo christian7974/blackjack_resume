@@ -35,7 +35,7 @@ def deal_to_dealer(dealer: Dealer, deck_to_deal_from: list[Card]):
     if dealer.score > 21:
         dealer.has_bust = True
     dealer.hand.append(top_card)
-
+# TODO: THE USER IS PRESENTED WITH THE OPTION TO SPLIT, HOWEVER WHEN CHOSEN THEY ARE UNABLE TO DO SO
 def game_play():
     num_turn = 0
     deal_to_player(player_1, master_deck)
@@ -45,26 +45,37 @@ def game_play():
     print("You have a score of", player_1.score)
     print("The dealer has a score of", the_dealer.score)
     print("-----------------------")
-    while (player_1.score <= 21):
-        output_options(player_1, num_turn)
-        num_turn += 1
-        user_move = ask_input("What would you like to do now?", user_options_subsequent_turn)
-        if user_move == 'h' or user_move == 'hit':
-            deal_to_player(player_1, master_deck)
-            print("-----------------------")
-            print("You have a score of", player_1.score)
+    if (player_1.score == 21):
+        print("You have Blackjack! It is the dealer's turn!")
+        dealer_deals()
+    else: 
+        while (player_1.score <= 21):
+            output_options(player_1, num_turn)
+            num_turn += 1
+            user_move = ask_input("What would you like to do now?", user_options_subsequent_turn)
+            if user_move == 'h' or user_move == 'hit':
+                deal_to_player(player_1, master_deck)
+                print("-----------------------")
+                print("You have a score of", player_1.score)
 
-        elif user_move == 's' or user_move == 'stand':
-            dealer_deals()
-            break
+            elif user_move == 's' or user_move == 'stand':
+                print("You chose to stand! It is the dealer's turn!")
+                dealer_deals()
+                break
 
-        elif user_move == 'd' or user_move == 'double':
-            print("----the player chose to double")
-        
-        if (player_1.score > 21):
-            print("The player has bust with a score of", player_1.score)
-            player_1.has_bust = True
-            break
+            elif user_move == 'd' or user_move == 'double':
+                print("You chose to double down!")
+                deal_to_player(player_1, master_deck)
+                print("-----------------------")
+                print("You have a score of", player_1.score)
+                print("It is the dealer's turn!")
+                dealer_deals()
+                break
+                
+            if (player_1.score > 21):
+                print("The player has bust with a score of", player_1.score)
+                player_1.has_bust = True
+                break
 
     check_for_winner()
 
@@ -89,12 +100,11 @@ def check_for_winner():
             print("Neither of you won; Push")
     elif (the_dealer.has_bust):
         if (not player_1.has_bust):
-            print("The player has won because the dealer bust!")
+            print("You won because the dealer bust!")
     elif (not the_dealer.has_bust and not player_1.has_bust): # neither player bust; compare scores
         if the_dealer.score > player_1.score:
             print("The dealer won because they have a higher score!")
         elif the_dealer.score < player_1.score:
-            print("The player won because you have a higher score!")
+            print("You won because you have a higher score!")
         else: 
             print("Neither of you won; Push")
-    print("\n")
