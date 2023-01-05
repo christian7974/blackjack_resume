@@ -22,5 +22,4 @@ def main():
         
         prelim_decision: str = ask_input("What would you like to do now?", valid_prelim_decision_answers)
     game_play()
-print("rahh")
 main()
