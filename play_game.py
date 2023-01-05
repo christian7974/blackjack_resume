@@ -5,32 +5,23 @@ from start_game import Card, player_1, master_deck, the_dealer
 from player import Player
 from dealer import Dealer
 from helpers import ask_input
-user_options_first_turn = ['sp', 'split', 'h', 'hit', 's', 'stand', 'd', 'double']
+user_options_first_turn = ['sp', 'split', 'h', 'hit', 's', 'stand', 'd', 'double'] # you can only choose to split on the first turn
 user_options_subsequent_turn = ['h', 'hit', 's', 'stand', 'd', 'double']
 
 def output_options(player: Player, num_turn: int):
-    if (player.hand[0].worth == player.hand[1].worth):
+    if (player.hand[0].worth == player.hand[1].worth) and num_turn == 0:
         print("Type 'sp' or 'split' to split")
     print("Type 'h' or 'hit' to hit")
     print("Type 's' or 'stand' to stand")
     print("Type 'd' or 'double' to double down")
-
-def output_initial_game_state(dealer: Dealer, player: Player):
-    print("the dealer was dealt a:")
-    for card in dealer.hand:
-        card.print_card()
-    print("his score is a", dealer.score)
-
-    print("you were dealt a:")
-    for card in player.hand:
-        card.print_card()
-    print("your score is a", player.score)
 
 def deal_card_from(deck: list[Card]) -> Card:
     return deck.pop()
 
 def deal_to_player(player_to_deal: Player, deck_to_deal_from: list[Card]):
     top_card = deal_card_from(deck_to_deal_from)
+    print("You have been dealt ", end='')
+    top_card.print_card()
     player_to_deal.score += top_card.worth
     if player_to_deal.score > 21:
         player_to_deal.has_bust = True
@@ -38,24 +29,72 @@ def deal_to_player(player_to_deal: Player, deck_to_deal_from: list[Card]):
 
 def deal_to_dealer(dealer: Dealer, deck_to_deal_from: list[Card]):
     top_card = deal_card_from(deck_to_deal_from)
+    print("The dealer was dealt ", end='')
+    top_card.print_card()
     dealer.score += top_card.worth
     if dealer.score > 21:
         dealer.has_bust = True
     dealer.hand.append(top_card)
 
-def begin_game():
+def game_play():
+    num_turn = 0
     deal_to_player(player_1, master_deck)
     deal_to_dealer(the_dealer, master_deck)
     deal_to_player(player_1, master_deck)
-    deal_to_dealer(the_dealer, master_deck)
-    output_initial_game_state(the_dealer, player_1)
-
-def mid_game(player: Player, dealer: Dealer):
-    while not player.has_bust and not dealer.has_bust: # while neither player or dealer has bust    
-        output_options(player_1)
-        user_move = ask_input("What would you like to do now?", ['sp', 'split', 'h', 'hit', 's', 'stand', 'd', 'double'])
+    print("-----------------------")
+    print("You have a score of", player_1.score)
+    print("The dealer has a score of", the_dealer.score)
+    print("-----------------------")
+    while (player_1.score <= 21):
+        output_options(player_1, num_turn)
+        num_turn += 1
+        user_move = ask_input("What would you like to do now?", user_options_subsequent_turn)
         if user_move == 'h' or user_move == 'hit':
-            print("You chose to hit!")
-            deal_to_player(player_1)
-begin_game() # only run once
-mid_game(player_1, the_dealer)
+            deal_to_player(player_1, master_deck)
+            print("-----------------------")
+            print("You have a score of", player_1.score)
+
+        elif user_move == 's' or user_move == 'stand':
+            dealer_deals()
+            break
+
+        elif user_move == 'd' or user_move == 'double':
+            print("----the player chose to double")
+        
+        if (player_1.score > 21):
+            print("The player has bust with a score of", player_1.score)
+            player_1.has_bust = True
+            break
+
+    check_for_winner()
+
+def dealer_deals():
+    while (the_dealer.score < 17):
+        deal_to_dealer(the_dealer, master_deck)
+        print("-----------------------")
+        print("The dealer has a score of", the_dealer.score)
+        if (the_dealer.score > 21):
+            print("The dealer has bust with a score of", the_dealer.score)
+            the_dealer.has_bust = True
+
+def check_for_winner():
+    print("-----------------------")
+    print("You have a score of", player_1.score)
+    print("The dealer has a score of", the_dealer.score)
+    print("-----------------------")
+    if (player_1.has_bust):
+        if (not the_dealer.has_bust):
+            print("The dealer has won because you bust!")
+        else:
+            print("Neither of you won; Push")
+    elif (the_dealer.has_bust):
+        if (not player_1.has_bust):
+            print("The player has won because the dealer bust!")
+    elif (not the_dealer.has_bust and not player_1.has_bust): # neither player bust; compare scores
+        if the_dealer.score > player_1.score:
+            print("The dealer won because they have a higher score!")
+        elif the_dealer.score < player_1.score:
+            print("The player won because you have a higher score!")
+        else: 
+            print("Neither of you won; Push")
+    print("\n")

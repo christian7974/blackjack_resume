@@ -3,7 +3,7 @@ Main file where the game gets started and everything required for the game (deck
 """
 from helpers import *
 from output_rules import retrieve_from_rules_file
-
+from play_game import game_play
 valid_prelim_decision_answers: list[str] = ["p", "play","q", "quit", "rules", "r"]
 first_prompt: str = "\nType 'p' or 'play' to start to play \nType 'r' or 'rules' to view the rules \nOr 'q' or 'quit' to start to quit"
 def main():
@@ -21,6 +21,6 @@ def main():
             quit()
         
         prelim_decision: str = ask_input("What would you like to do now?", valid_prelim_decision_answers)
-
-    print("time to play!")
+    game_play()
+print("rahh")
 main()

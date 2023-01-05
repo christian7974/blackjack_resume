@@ -24,16 +24,16 @@ def initialize_deck():
     deck: list[Card] = []
     for i in range(0, 4): # loop thru 4 suits
         if i == 0:
-            suit_of_card = "hearts"
+            suit_of_card = "Hearts"
 
         elif i == 1:
-            suit_of_card = "diamonds"
+            suit_of_card = "Diamonds"
 
         elif i == 2:
-            suit_of_card = "spades"
+            suit_of_card = "Spades"
 
         elif i == 3:
-            suit_of_card = "clubs"
+            suit_of_card = "Clubs"
 
         for j in range(1, 14): # loop thru 13 values
             if j == 1:
